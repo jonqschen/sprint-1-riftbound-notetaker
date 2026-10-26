@@ -33,6 +33,7 @@ No card selection, card tagging or card database. Free text only.
 - `/` games list (filter by result, legend matchup, date range; newest first)
 - `/games/new` create a game
 - `/games/[id]` detail page: turn log, filters (turn, satisfaction, flag), edit and delete
+- `/games/[id]/edit` edit a game
 - Unknown ids show a friendly not-found message
 
 ## Conventions
