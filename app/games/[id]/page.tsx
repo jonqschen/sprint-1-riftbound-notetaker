@@ -3,9 +3,9 @@
 import { use, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { EmptyState } from '@/components/EmptyState';
 import { NotFound } from '@/components/NotFound';
 import { ResultBadge } from '@/components/ResultBadge';
+import { TurnLog } from '@/components/TurnLog';
 import { formatDate } from '@/components/formatDate';
 import { useGames } from '@/hooks/useGames';
 
@@ -17,7 +17,7 @@ const secondaryButton =
 export default function GameDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
-  const { status, getGame, removeGame } = useGames();
+  const { status, getGame, saveGame, removeGame } = useGames();
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteFailed, setDeleteFailed] = useState(false);
@@ -83,8 +83,7 @@ export default function GameDetailPage({ params }: { params: Promise<{ id: strin
       </section>
 
       <section>
-        <h2 className="mb-2 text-lg font-semibold">Turns</h2>
-        <EmptyState heading="No turns logged yet" message="Turn logging is coming next." />
+        <TurnLog game={game} onChange={(turns) => saveGame({ ...game, turns })} />
       </section>
 
       <section>
