@@ -96,7 +96,7 @@ export default function Home() {
               className="block rounded-lg border border-zinc-200 p-4 hover:bg-zinc-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-zinc-800 dark:hover:bg-zinc-900"
             >
               <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
+                <div className="min-w-0 break-words">
                   <p className="text-sm text-zinc-600 dark:text-zinc-400">{formatDate(g.date)}</p>
                   <p className="font-semibold">
                     {g.myLegend} vs {g.opponentLegend}

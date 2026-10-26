@@ -41,14 +41,14 @@ export default function GameDetailPage({ params }: { params: Promise<{ id: strin
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 pb-24 md:pb-0">
       <Link href="/" className={`${linkClass} self-start text-indigo-700 dark:text-indigo-400`}>
         ← Back to games
       </Link>
 
       <div>
         <div className="flex items-start justify-between gap-3">
-          <h1 className="text-2xl font-semibold">
+          <h1 className="min-w-0 break-words text-2xl font-semibold">
             {game.myLegend} vs {game.opponentLegend}
           </h1>
           <ResultBadge result={game.result} />
@@ -60,7 +60,7 @@ export default function GameDetailPage({ params }: { params: Promise<{ id: strin
           </div>
           <div>
             <dt className="text-zinc-600 dark:text-zinc-400">Deck</dt>
-            <dd>{game.deckName || '—'}</dd>
+            <dd className="break-words">{game.deckName || '—'}</dd>
           </div>
           <div>
             <dt className="text-zinc-600 dark:text-zinc-400">Match type</dt>
@@ -76,7 +76,7 @@ export default function GameDetailPage({ params }: { params: Promise<{ id: strin
       <section>
         <h2 className="mb-1 text-lg font-semibold">Before the game</h2>
         {game.preGameNotes ? (
-          <p className="whitespace-pre-wrap">{game.preGameNotes}</p>
+          <p className="whitespace-pre-wrap break-words">{game.preGameNotes}</p>
         ) : (
           <p className="text-zinc-500 dark:text-zinc-400">No notes yet.</p>
         )}
@@ -89,7 +89,7 @@ export default function GameDetailPage({ params }: { params: Promise<{ id: strin
       <section>
         <h2 className="mb-1 text-lg font-semibold">After the game</h2>
         {game.postGameReflection ? (
-          <p className="whitespace-pre-wrap">{game.postGameReflection}</p>
+          <p className="whitespace-pre-wrap break-words">{game.postGameReflection}</p>
         ) : (
           <p className="text-zinc-500 dark:text-zinc-400">No reflection yet.</p>
         )}
@@ -104,7 +104,7 @@ export default function GameDetailPage({ params }: { params: Promise<{ id: strin
         {confirming ? (
           <div role="alertdialog" aria-label="Confirm delete" className="rounded-lg border border-red-300 p-4 dark:border-red-900">
             <p className="font-medium">Delete this game? This can&apos;t be undone.</p>
-            <div className="mt-3 flex gap-3">
+            <div className="mt-3 flex flex-wrap gap-3">
               <button type="button" onClick={() => setConfirming(false)} className={secondaryButton}>
                 Cancel
               </button>
@@ -118,7 +118,7 @@ export default function GameDetailPage({ params }: { params: Promise<{ id: strin
             </div>
           </div>
         ) : (
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <Link
               href={`/games/${id}/edit`}
               className="inline-flex min-h-11 items-center rounded-lg bg-indigo-600 px-5 font-medium text-white hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950"

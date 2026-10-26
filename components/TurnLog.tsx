@@ -50,7 +50,7 @@ export function TurnLog({ game, onChange }: Props) {
   const handleDelete = (id: string): boolean => commitInline(game.turns.filter((t) => t.id !== id));
 
   return (
-    <div className={adding ? '' : 'pb-24 md:pb-0'}>
+    <div>
       <div className="mb-3 flex items-center justify-between gap-3">
         <h2 className="text-lg font-semibold">Turns</h2>
         {!adding ? (

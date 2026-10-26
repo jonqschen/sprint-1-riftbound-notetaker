@@ -11,9 +11,9 @@ const stepButton =
 
 export function ScoreStepper({ label, value, onChange }: Props) {
   return (
-    <div className="flex-1">
+    <div className="min-w-0 flex-1">
       <p className="mb-1 text-sm font-medium">{label}</p>
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-1">
         <button
           type="button"
           aria-label={`Decrease ${label} score`}
@@ -23,7 +23,7 @@ export function ScoreStepper({ label, value, onChange }: Props) {
         >
           −
         </button>
-        <span aria-live="polite" className="min-w-8 text-center text-3xl font-semibold tabular-nums">
+        <span aria-live="polite" className="min-w-6 text-center text-3xl font-semibold tabular-nums">
           {value}
         </span>
         <button

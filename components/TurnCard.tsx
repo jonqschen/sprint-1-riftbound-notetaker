@@ -23,7 +23,7 @@ function Note({ label, text }: { label: string; text: string }) {
     <div>
       <p className="text-sm text-zinc-600 dark:text-zinc-400">{label}</p>
       {text ? (
-        <p className="whitespace-pre-wrap">{text}</p>
+        <p className="whitespace-pre-wrap break-words">{text}</p>
       ) : (
         <p className="text-zinc-500 dark:text-zinc-400">—</p>
       )}
@@ -69,7 +69,7 @@ export function TurnCard({ turn, onSave, onDelete }: Props) {
   const flag = turn.flag === 'none' ? null : FLAG_STYLES[turn.flag];
 
   return (
-    <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+    <div className="break-words rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="font-semibold">Turn {turn.turn}</h3>
@@ -91,7 +91,7 @@ export function TurnCard({ turn, onSave, onDelete }: Props) {
       {confirming ? (
         <div role="alertdialog" aria-label="Confirm delete turn" className="mt-3 rounded-lg border border-red-300 p-3 dark:border-red-900">
           <p className="font-medium">Delete this turn?</p>
-          <div className="mt-3 flex gap-3">
+          <div className="mt-3 flex flex-wrap gap-3">
             <button
               type="button"
               onClick={() => {
@@ -113,7 +113,7 @@ export function TurnCard({ turn, onSave, onDelete }: Props) {
           {failure}
         </div>
       ) : (
-        <div className="mt-3 flex gap-3">
+        <div className="mt-3 flex flex-wrap gap-3">
           <button type="button" onClick={() => setEditing(true)} className={secondaryButton}>
             Edit
           </button>
