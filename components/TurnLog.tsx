@@ -24,7 +24,9 @@ export function TurnLog({ game, onChange }: Props) {
 
   // Array.prototype.sort is stable, so duplicate turn numbers keep their stored order.
   const sorted = [...game.turns].sort((a, b) => a.turn - b.turn);
-  const visible = filterTurns(sorted, filters);
+  const turnFilter = filters.turn !== 'all' && !game.turns.some((t) => t.turn === filters.turn) ? 'all' : filters.turn;
+  const effectiveFilters: Filters = { ...filters, turn: turnFilter };
+  const visible = filterTurns(sorted, effectiveFilters);
 
   const commit = (turns: TurnEntry[]): boolean => {
     const ok = onChange(turns);
@@ -36,13 +38,16 @@ export function TurnLog({ game, onChange }: Props) {
     if (commit([...game.turns, turn])) setAdding(false);
   };
 
-  const handleSave = (turn: TurnEntry) => {
-    commit(game.turns.map((t) => (t.id === turn.id ? turn : t)));
+  // Edit and delete report failure inline on the card, so they don't set the top-level alert.
+  const commitInline = (turns: TurnEntry[]): boolean => {
+    const ok = onChange(turns);
+    if (ok) setSaveFailed(false);
+    return ok;
   };
 
-  const handleDelete = (id: string) => {
-    commit(game.turns.filter((t) => t.id !== id));
-  };
+  const handleSave = (turn: TurnEntry): boolean => commitInline(game.turns.map((t) => (t.id === turn.id ? turn : t)));
+
+  const handleDelete = (id: string): boolean => commitInline(game.turns.filter((t) => t.id !== id));
 
   return (
     <div className={adding ? '' : 'pb-24 md:pb-0'}>
@@ -63,7 +68,7 @@ export function TurnLog({ game, onChange }: Props) {
 
       {game.turns.length > 0 ? (
         <>
-          <TurnFilters turns={game.turns} filters={filters} onChange={setFilters} />
+          <TurnFilters turns={game.turns} filters={effectiveFilters} onChange={setFilters} />
           <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">
             Showing {visible.length} of {game.turns.length} turns
           </p>

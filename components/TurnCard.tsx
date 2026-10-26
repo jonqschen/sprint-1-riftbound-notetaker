@@ -6,8 +6,8 @@ import { TurnForm } from '@/components/TurnForm';
 
 type Props = {
   turn: TurnEntry;
-  onSave: (turn: TurnEntry) => void;
-  onDelete: (id: string) => void;
+  onSave: (turn: TurnEntry) => boolean;
+  onDelete: (id: string) => boolean;
 };
 
 const FLAG_STYLES: Record<Exclude<Flag, 'none'>, { label: string; className: string }> = {
@@ -34,18 +34,35 @@ function Note({ label, text }: { label: string; text: string }) {
 export function TurnCard({ turn, onSave, onDelete }: Props) {
   const [editing, setEditing] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  const failure = failed ? (
+    <p role="alert" className="mt-3 text-sm text-red-700 dark:text-red-400">
+      Couldn&apos;t save — your browser storage may be full or blocked.
+    </p>
+  ) : null;
 
   if (editing) {
     return (
-      <TurnForm
-        initial={turn}
-        submitLabel="Save turn"
-        onSubmit={(t) => {
-          onSave(t);
-          setEditing(false);
-        }}
-        onCancel={() => setEditing(false)}
-      />
+      <div>
+        <TurnForm
+          initial={turn}
+          submitLabel="Save turn"
+          onSubmit={(t) => {
+            if (onSave(t)) {
+              setFailed(false);
+              setEditing(false);
+            } else {
+              setFailed(true);
+            }
+          }}
+          onCancel={() => {
+            setFailed(false);
+            setEditing(false);
+          }}
+        />
+        {failure}
+      </div>
     );
   }
 
@@ -75,17 +92,25 @@ export function TurnCard({ turn, onSave, onDelete }: Props) {
         <div role="alertdialog" aria-label="Confirm delete turn" className="mt-3 rounded-lg border border-red-300 p-3 dark:border-red-900">
           <p className="font-medium">Delete this turn?</p>
           <div className="mt-3 flex gap-3">
-            <button type="button" onClick={() => setConfirming(false)} className={secondaryButton}>
+            <button
+              type="button"
+              onClick={() => {
+                setFailed(false);
+                setConfirming(false);
+              }}
+              className={secondaryButton}
+            >
               Cancel
             </button>
             <button
               type="button"
-              onClick={() => onDelete(turn.id)}
+              onClick={() => setFailed(!onDelete(turn.id))}
               className="inline-flex min-h-11 items-center rounded-lg bg-red-700 px-4 font-medium text-white hover:bg-red-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950"
             >
               Yes, delete
             </button>
           </div>
+          {failure}
         </div>
       ) : (
         <div className="mt-3 flex gap-3">
