@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import type { Game, TurnEntry } from '@/lib/types';
 import { nextTurnDefaults } from '@/lib/turns';
+import { DEFAULT_TURN_FILTERS, filterTurns, type TurnFilters as Filters } from '@/lib/filters';
 import { EmptyState } from '@/components/EmptyState';
 import { TurnCard } from '@/components/TurnCard';
+import { TurnFilters } from '@/components/TurnFilters';
 import { TurnForm } from '@/components/TurnForm';
 
 type Props = {
@@ -18,9 +20,11 @@ const primaryButton =
 export function TurnLog({ game, onChange }: Props) {
   const [adding, setAdding] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
+  const [filters, setFilters] = useState<Filters>(DEFAULT_TURN_FILTERS);
 
   // Array.prototype.sort is stable, so duplicate turn numbers keep their stored order.
   const sorted = [...game.turns].sort((a, b) => a.turn - b.turn);
+  const visible = filterTurns(sorted, filters);
 
   const commit = (turns: TurnEntry[]): boolean => {
     const ok = onChange(turns);
@@ -57,6 +61,15 @@ export function TurnLog({ game, onChange }: Props) {
         </p>
       ) : null}
 
+      {game.turns.length > 0 ? (
+        <>
+          <TurnFilters turns={game.turns} filters={filters} onChange={setFilters} />
+          <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">
+            Showing {visible.length} of {game.turns.length} turns
+          </p>
+        </>
+      ) : null}
+
       <div className="flex flex-col gap-3">
         {adding ? (
           <TurnForm
@@ -68,9 +81,23 @@ export function TurnLog({ game, onChange }: Props) {
         ) : null}
         {sorted.length === 0 && !adding ? (
           <EmptyState heading="No turns logged yet" message="Tap Add turn to log your first turn." />
-        ) : (
-          sorted.map((t) => <TurnCard key={t.id} turn={t} onSave={handleSave} onDelete={handleDelete} />)
-        )}
+        ) : null}
+        {sorted.length > 0 && visible.length === 0 ? (
+          <EmptyState
+            heading="No turns match these filters."
+            message="Try loosening or clearing the filters."
+            action={
+              <button
+                type="button"
+                onClick={() => setFilters(DEFAULT_TURN_FILTERS)}
+                className="inline-flex min-h-11 items-center rounded-lg border border-zinc-300 px-4 font-medium hover:bg-zinc-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-zinc-700 dark:hover:bg-zinc-800"
+              >
+                Clear filters
+              </button>
+            }
+          />
+        ) : null}
+        {visible.map((t) => <TurnCard key={t.id} turn={t} onSave={handleSave} onDelete={handleDelete} />)}
       </div>
 
       {!adding ? (

@@ -1,10 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useGames } from '@/hooks/useGames';
 import { clearAll, replaceAll } from '@/lib/storage';
 import { seedDemoGames } from '@/lib/seed';
+import { DEFAULT_GAME_FILTERS, filterGames, type GameFilters as Filters } from '@/lib/filters';
 import { EmptyState } from '@/components/EmptyState';
+import { GameFilters } from '@/components/GameFilters';
 import { ResultBadge } from '@/components/ResultBadge';
 import { formatDate } from '@/components/formatDate';
 
@@ -14,6 +17,7 @@ const devButton =
 
 export default function Home() {
   const { status, games } = useGames();
+  const [filters, setFilters] = useState<Filters>(DEFAULT_GAME_FILTERS);
 
   if (status === 'loading') {
     return <p className="text-zinc-600 dark:text-zinc-400">Loading your games…</p>;
@@ -58,13 +62,32 @@ export default function Home() {
     );
   }
 
-  const sorted = [...games].sort(
+  const sorted = [...filterGames(games, filters)].sort(
     (a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt),
   );
 
   return (
     <div>
       <h1 className="sr-only">Your games</h1>
+      <GameFilters games={games} filters={filters} onChange={setFilters} />
+      <p className="my-3 text-sm text-zinc-600 dark:text-zinc-400">
+        Showing {sorted.length} of {games.length} games
+      </p>
+      {sorted.length === 0 ? (
+        <EmptyState
+          heading="No games match these filters."
+          message="Try loosening or clearing the filters."
+          action={
+            <button
+              type="button"
+              onClick={() => setFilters(DEFAULT_GAME_FILTERS)}
+              className="inline-flex min-h-11 items-center rounded-lg border border-zinc-300 px-4 font-medium hover:bg-zinc-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-zinc-700 dark:hover:bg-zinc-800"
+            >
+              Clear filters
+            </button>
+          }
+        />
+      ) : null}
       <ul className="flex flex-col gap-3">
         {sorted.map((g) => (
           <li key={g.id}>

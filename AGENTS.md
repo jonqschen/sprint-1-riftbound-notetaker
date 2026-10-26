@@ -16,6 +16,7 @@ Single-user, no-backend note-taking app for logging Riftbound TCG games, used ma
 ## Architecture
 - `lib/types.ts`: Game and TurnEntry types
 - `lib/storage.ts`: the ONLY file that touches `localStorage`. Exposes list, get, save, remove, exportAll
+- `lib/filters.ts`: pure filter functions for the games list and the turn log
 - `hooks/useGames.ts`: hydration-safe access to storage with a `loading | ready` state
 - `app/`: routes. Pages that read stored data are client components
 - `docs/storage-decision.md`: why localStorage was chosen (research and sources)
