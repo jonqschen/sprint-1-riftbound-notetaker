@@ -20,6 +20,7 @@ Single-user, no-backend note-taking app for logging Riftbound TCG games, used ma
 - `hooks/useGames.ts`: hydration-safe access to storage with a `loading | ready` state
 - `app/`: routes. Pages that read stored data are client components
 - `docs/storage-decision.md`: why localStorage was chosen (research and sources)
+- `docs/`: storage decision record and README screenshots
 
 ## Data model
 Stored as one versioned JSON blob: `{ version: 1, games: Game[] }`. Dates are ISO strings.
